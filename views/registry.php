@@ -4,6 +4,10 @@
         <?php echo nl2br($_SESSION['msg']); ?>
         <?php unset($_SESSION['msg']); ?>
     <?php endif; ?>
+    <?php if(!empty($_SESSION['usr_er'])): ?>
+        <?php echo nl2br($_SESSION['usr_er']); ?>
+        <?php unset($_SESSION['usr_er']); ?> 
+    <?php endif; ?> 
     <form action="../src/models/registry_handler.php" method="post">
         Name <input type="text" name="user_name"><br>
         Email <input type="text" name="email"><br>

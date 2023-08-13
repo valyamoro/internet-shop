@@ -8,6 +8,7 @@ if (!empty($_POST)){
     foreach ($_POST as $key => $val) {
         $user[$key] = htmlspecialchars(strip_tags(trim($val)));
     }
+    // Валидация пришедших данных
     if (empty($user['user_name'])) {
         $msg .= 'Заполните поле имя' . PHP_EOL;
     } elseif (preg_match('#[^а-яa-z]#ui', $user['user_name'])) {
@@ -42,6 +43,22 @@ if (!empty($_POST)){
         $msg .= 'Заполните поле номер' . PHP_EOL;
     } elseif (!preg_match('/((8|\+7)-?)?\(?\d{3,5}\)?-?\d{1}-?\d{1}-?\d{1}-?\d{1}-?\d{1}((-?\d{1})?-?\d{1})?/', $user['number'])) {
         $msg .= 'Некоректный номер' . $user['number'] . PHP_EOL;
+    }
+    // Проверка на уникальность логина 
+    $files = glob('../users/*.txt'); 
+
+    $username = $_POST['user_name']; 
+
+    foreach ($files as $file) {
+        $content = file_get_contents($file); 
+        $users = unserialize($content);
+
+        foreach ($users as $user) {
+            if ($user['user_name'] === $username) {
+                $_SESSION['usr_er'] = 'Ошибка: Данный пользователь уже зарегистрирован';
+                die; 
+            }
+        }
     }
         if (!empty($msg)) {
             $_SESSION['msg'] = $msg;
