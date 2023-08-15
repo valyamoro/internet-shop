@@ -12,43 +12,42 @@ if (!empty($_POST)) {
 
     // Инициализируем почту и пароль
 
-    $email = $user[$_POST['email']]; 
+    $email = $user['email'];
+    $password = $user['password'];
+
     // Забираем данные из users.txt
 
-    $file = file_get_contents('../users/users.txt');
+    $file = file('../users/users.txt');
     $users = explode('|', $file);
 
+    foreach ($file as $line) {
+        $userData = explode('|', $line);
+        $users[] = $userData;
+    }
 
+    // Перебор пользователей, получаем нужную строку
+    // Проверяем все данные из $_POST с данными из файла
 
-    // Сравниваем данные из пост со строками из users.txt
+    foreach ($users as $user) {
+        if ($email == $user[2] && $password == $user[3]) {
+            $_SESSION['msg'] = 'Вы авторизировались!';
+            $_SESSION['user'] = [
+                'id' => $user[0],
+                'username' => $user[1],
+                'email' => $user[2],
+                'phone' => $user[4],
+            ];
+            header('Location: ../../index.php'); 
+            break;
+        } else {
+            $_SESSION['msg'] = 'Вы не авторизировались!';
+            $flagAuth = false;
+        }
+    }
 
-
-
-
-
-
-
-
-//    if (vse_ok) {
-//        ЗАПИСЫВАЮ АБСОЛЮТНО ВСЕ ДАННЫЕ В СЕССИЮ;
-//    }
 }
-    ?>
-<div>
-    <?php if(!empty($_SESSION['msg'])): ?>
-        <?php echo nl2br($_SESSION['msg']); ?>
-        <?php unset($_SESSION['msg']); ?>
-    <?php endif; ?>
-    <?php if(!empty($_SESSION['usr_er'])): ?>
-        <?php echo nl2br($_SESSION['usr_er']); ?>
-        <?php unset($_SESSION['usr_er']); ?>
-    <?php endif; ?>
-    <form method="post">
-        Email <input type="text" name="email"><br>
-        Password <input type="text" name="password"><br>
-        <input type="submit" value="Отправить">
-    </form>
-</div>
+
+
 
 
 
