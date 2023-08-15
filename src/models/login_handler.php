@@ -9,46 +9,18 @@ if (!empty($_POST)) {
     foreach ($_POST as $key => $val) {
         $user[$key] = htmlspecialchars(strip_tags(trim($val)));
     }
-    $email = $user['email'];
-    $password = md5($user['password']);
+
+    // Инициализируем почту и пароль
+
+    $email = $user[$_POST['email']]; 
+    // Забираем данные из users.txt
+
+    $file = file_get_contents('../users/users.txt');
+    $users = explode('|', $file);
 
 
 
-    // Сначала я ищу через email id пользователя, затем через id я получаю всю строку
-    // Ищем айди по email
-
-    $path = '../users/users.txt';
-
-    $fileContent = file_get_contents($path);
-
-    $lines = explode("\n", $fileContent);
-    $id = null;
-    foreach ($lines as $line) {
-        $parts = explode("|", $line);
-        if ($parts[2] == $email && $parts[3] == $password) {
-            $id = $parts[0];
-            print_r$id);
-        }
-    }
-
-
-    // Ищем остальные данные по айди
-    $number = $id; // Цифра, с которой строки должны начинаться
-    $result = '';
-
-    foreach ($lines as $line) {
-        if (strpos($line, $number . '|') === 0) {
-//          $_SESSION['msg'] = $result .= $line;
-            $_SESSION['user'] = [
-                "email" => $user['email'],
-                "password" => $user['password'],
-            ];
-//            header('Location: ../../index.php');
-//            die;
-        }
-    }
-    // Надо будет записать все данные в сессию
-
+    // Сравниваем данные из пост со строками из users.txt
 
 
 
