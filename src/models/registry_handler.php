@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 error_reporting(-1);
 session_start();
 
@@ -48,122 +50,89 @@ if (!empty($_POST)) {
         $msg .= 'Некоректный номер' . $user['number'] . PHP_EOL;
     }
 
-
-
-        if (!empty($msg)) {
-            $_SESSION['msg'] = $msg;
-        } else {
-            // Изменение номера перед отправкой в файл.
-            if (preg_match('/\+/', $user['number'])) {
-                $user['number'] = preg_replace('/\+/', '', $user['number']);
-            }
-            if (!preg_match('/^(\d{1})(\d{10})$/', $user['number'])) {
-                $user['number'] = '7' . $user['number'];
-            }
-            if (preg_match('/^8/', $user['number'])) {
-                $user['number'] = preg_replace('/8/', '7', $user['number']);
-            }
-// Запись данных пользователя в разные файлы
-//            if (!file_exists('../users')) {
-//                mkdir('users', 0777, true);
-//            }
-//
-//            $string = implode('|', $user);
-//            $user = str_replace('|', '|', $string);
-//
-//            // Работа файлов
-//            $directory = '../users';
-//            $files = glob($directory . '/*');
-//            usort($files, function ($a, $b) {
-//                return filemtime($a) < filemtime($b);
-//            });
-//
-//            $latestFile = reset($files);
-//            preg_match('/(\d+)/', $latestFile, $matches);
-//            $lastCount = intval($matches[0]) + 1;
-//            $lastId = 'id' . $lastCount . '.txt';
-//            $fileName = '../users/' . $lastId;
-//            file_put_contents($fileName, $user);
-
-// Записать данных пользователя в один файл:
-
-            $file = '../users/users.txt';
-
-            if (!file_exists('../users')) {
-                mkdir('users', 0777, true);
-            }
-
-            if (!file_exists($file)) {
-                $handle = fopen($file, 'w');
-                fclose($handle);
-            }
-
-            $data = file($file, FILE_IGNORE_NEW_LINES);
-
-            $lastId = count($data) > 0 ? explode(',', end($data))[0] + 1 : 1;
-
-            $name = $_POST['user_name'];
-            $email = $_POST['email'];
-            $password = md5($_POST['password']);
-            $number = $_POST['number'];
-
-            // Если пользователь с такой почтой, именем или номером существует, то не регистрируем
-            $userExists = false;
-            foreach($data as $usr) {
-                if (strpos($usr, $name) !== false || strpos($usr, $email) || strpos($usr, $number)) {
-                    $userExists = true;
-                    $_SESSION['msg'] = 'Пользователь с этими данными уже зарегистрирован!';
-                    header('Location: ../../views/registry.php');
-                    die;
-                }
-            }
-
-            $userData =  "$lastId|$name|$email|$password|$number";
-
-            file_put_contents($file, $userData.PHP_EOL, FILE_APPEND);
-
-            // Тут выводим инфу пользователя по его id
-
-//            $lines = file('../users/users.txt');
-//            $number = '2'; // Цифра, с которой строки должны начинаться
-//            $result = '';
-//
-//            foreach ($lines as $line) {
-//                if (strpos($line, $number . '|') === 0) {
-//                    $_SESSION['msg'] = $result .= $line;
-//                }
-//            }
-
-            $_SESSION['msg'] = 'Регистрация завершена, ваш айди: ' . $lastId . PHP_EOL;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if (!empty($msg)) {
+        $_SESSION['msg'] = $msg;
+    } else {
+        // Изменение номера перед отправкой в файл.
+        if (strpos($user['number'], '+') !== false) {
+            $user['number'] = str_replace('+', '', $user['number']);
+        } elseif (strlen($user['number']) === 10 && substr($user['number'], 0, 1) !== '7') {
+            $user['number'] = '7' . $user['number'];
+        } elseif (substr($user['number'], 0, 1) === '8') {
+            $user['number'] = '7' . substr($user['number'], 1);
         }
-        header("Location: ../../views/registry.php");
-        die;
 
+        // Инициализируем данные пользователя
+
+        $name = $_POST['user_name'];
+        $email = $_POST['email'];
+        $password = md5($_POST['password']);
+        $number = $user['number'];
+
+        // Прописываем относительные пути до файлов
+
+        $fileUsers = '../users/users.txt';
+        $directoryUsers = '../users';
+
+        // Создаем папку users, если ее нету
+
+        if (!file_exists($directoryUsers)) {
+            mkdir('users', 0777, true);
+        }
+
+        // Создаем все нужные файлы, если их не существует
+
+        $items = [$fileUsers];
+        foreach ($items as $item) {
+            !file_exists($item) && file_put_contents($item, '');
+        }
+
+        // Создаем новый айди пользователю
+
+        $dataUsers = file($fileUsers, FILE_IGNORE_NEW_LINES);
+
+        $newId = !empty($dataUsers) ? (explode('|', end($dataUsers))[0] + 1) : 1;
+
+        // Проверяем данные нового пользователя, если они уже есть то не регистрируем
+
+        $userExists = false;
+        foreach ($dataUsers as $line) {
+            $userData = explode('|', $line);
+            if ($userData[1] === $name || $userData[2] === $email || $userData[4] === $number) {
+                $userExists = true;
+                break;
+            }
+        }
+
+        if ($userExists) {
+            $_SESSION['msg'] = 'Пользователь с этими данными уже зарегистрирован!';
+            header('Location: ../../views/registry.php');
+            die;
+        }
+
+        // Создаем строку с данными пользователя:
+
+        $userData = "$newId|$name|$email|$password|$number";
+
+        file_put_contents($fileUsers, $userData . PHP_EOL, FILE_APPEND);
+
+        // Блокировка файла:
+
+        $file = fopen($fileUsers, "a");
+        if (flock($file, LOCK_EX)) {
+            // Записываем данные регистрации в файл
+            fwrite($file, "Новый пользователь\n");
+
+            // Снимаем блокировку файла
+            flock($file, LOCK_UN);
+        } else {
+            echo "Не удалось получить блокировку файла.";
+        }
+
+        fclose($file);
+        $_SESSION['msg'] = 'Регистрация успешно завершена!';
+
+        header('Location: ../../views/registry.php');
+
+    }
 }
-
-?>
