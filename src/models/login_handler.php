@@ -34,6 +34,7 @@ if (!empty($_POST)) {
     } elseif (strlen($user['password']) > 15) {
         $msg .= 'Пароль больше 15 символов ' . PHP_EOL;
     }
+    
     if (empty($msg)) {
         $user = [];
         foreach ($_POST as $key => $val) {
