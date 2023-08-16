@@ -48,7 +48,7 @@ if (!empty($_POST)) {
         // Забираем данные всех пользователей из users.txt
 
         $fileUsers = file('../users/users.txt');
-        $users = explode('|', $fileUsers);
+//      $users = explode('|', $fileUsers);
 
         foreach ($fileUsers as $line) {
             $userData = explode('|', $line);
