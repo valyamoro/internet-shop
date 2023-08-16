@@ -114,15 +114,11 @@ if (!empty($_POST)) {
 
         $userData = "$newId|$name|$email|$password|$number";
 
-        file_put_contents($fileUsers, $userData . PHP_EOL, FILE_APPEND);
-
         // Блокировка файла:
-
-        $file = fopen($fileUsers, "a");
+        $file = fopen($fileUsers, 'a');
         if (flock($file, LOCK_EX)) {
             // Записываем данные регистрации в файл
-            fwrite($file, "Новый пользователь\n");
-
+            fwrite($file, $userData . PHP_EOL);
             // Снимаем блокировку файла
             flock($file, LOCK_UN);
         } else {
