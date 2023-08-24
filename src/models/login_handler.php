@@ -47,11 +47,10 @@ if (!empty($_POST)) {
         $password = md5($user['password']);
 
         // Забираем данные всех пользователей из users.txt
+        $fileUsersData = __DIR__ . '\usersData\users.txt';
+        $lines = file($fileUsersData);
 
-        $fileUsers = file('../users/users.txt');
-//      $users = explode('|', $fileUsers);
-
-        foreach ($fileUsers as $line) {
+        foreach ($lines as $line) {
             $userData = explode('|', $line);
             $users[] = $userData;
         }
@@ -83,7 +82,7 @@ if (!empty($_POST)) {
 //              'password' => $user['password'],
                 'phone' => $user['phone'],
             ];
-            header('Location: ../../index.php');
+            header('Location: ../../views/profile.php');
             die;
         } else {
             $_SESSION['msg'] = 'Вы не авторизировались!';
@@ -92,7 +91,7 @@ if (!empty($_POST)) {
         }
     } else {
         $_SESSION['msg'] = $msg;
-        header('Location: ../../index.php');
+        header('Location: ../../views/profile.php');
         die;
     }
 }

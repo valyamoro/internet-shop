@@ -64,47 +64,47 @@ if (!empty($_POST)) {
 
         // Инициализируем данные пользователя
 
-        $name = $_POST['user_name'];
-        $email = $_POST['email'];
-        $password = md5($_POST['password']);
+        $name = $user['user_name'];
+        $email = $user['email'];
+        $password = md5($user['password']);
         $number = $user['number'];
 
         // Прописываем относительные пути до файлов
 
-        $fileUsers = '../users/users.txt';
-        $directoryUsers = '../users';
+        $fileUsersData = __DIR__ . '\usersData\users.txt';
+        $directoryUsers = __DIR__ . 'models\users';
 
         // Создаем папку users, если ее нету
 
         if (!file_exists($directoryUsers)) {
-            mkdir('users', 0777, true);
+            mkdir('usersData', 0777, true);
         }
 
         // Создаем все нужные файлы, если их не существует
 
-        $items = [$fileUsers];
+        $items = [$fileUsersData];
         foreach ($items as $item) {
             !file_exists($item) && file_put_contents($item, '');
         }
 
         // Создаем новый айди пользователю
 
-        $dataUsers = file($fileUsers, FILE_IGNORE_NEW_LINES);
+        $dataUsers = file($fileUsersData, FILE_IGNORE_NEW_LINES);
 
         $newId = !empty($dataUsers) ? (explode('|', end($dataUsers))[0] + 1) : 1;
 
         // Проверяем данные нового пользователя, если они уже есть то не регистрируем
 
-        $userExists = false;
+        $isUserExists = false;
         foreach ($dataUsers as $line) {
             $userData = explode('|', $line);
             if ($userData[1] === $name || $userData[2] === $email || $userData[4] === $number) {
-                $userExists = true;
+                $isUserExists = true;
                 break;
             }
         }
 
-        if ($userExists) {
+        if ($isUserExists) {
             $_SESSION['msg'] = 'Пользователь с этими данными уже зарегистрирован!';
             header('Location: ../../views/registry.php');
             die;
@@ -112,14 +112,12 @@ if (!empty($_POST)) {
 
         // Создаем строку с данными пользователя:
 
-        $userData = "$newId|$name|$email|$password|$number";
+        $userData = "{$newId}|{$name}|{$email}|{$password}|{$number}";
 
         // Блокировка файла:
-        $file = fopen($fileUsers, 'a');
+        $file = fopen($fileUsersData, 'a');
         if (flock($file, LOCK_EX)) {
-            // Записываем данные регистрации в файл
             fwrite($file, $userData . PHP_EOL);
-            // Снимаем блокировку файла
             flock($file, LOCK_UN);
         } else {
             echo "Не удалось получить блокировку файла.";
