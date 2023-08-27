@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 error_reporting(-1);
 session_start();
@@ -11,6 +10,7 @@ if (!empty($_POST)) {
         $user[$key] = htmlspecialchars(strip_tags(trim($val)));
     }
 
+
     // Валидация пришедших данных
     if (empty($user['user_name'])) {
         $msg .= 'Заполните поле имя' . PHP_EOL;
@@ -19,7 +19,7 @@ if (!empty($_POST)) {
     } elseif (mb_strlen($user['user_name']) > 15) {
         $msg .= 'Имя содержит больше 15 символов' . $user['name'] . PHP_EOL;
     } elseif (mb_strlen($user['user_name']) <= 3) {
-        $msg .= 'Имя содержит менее 3 символов' . $user['name'] . PHP_EOL;
+        $msg .= 'Имя содержит менее 4 символов' . $user['name'] . PHP_EOL;
     }
 
     if (empty($user['email'])) {
@@ -44,88 +44,148 @@ if (!empty($_POST)) {
         $msg .= 'Пароль больше 15 символов ' . PHP_EOL;
     }
 
-    if (empty($user['number'])) {
+    if (empty($user['phone_number'])) {
         $msg .= 'Заполните поле номер' . PHP_EOL;
-    } elseif (!preg_match('/((8|\+7)-?)?\(?\d{3,5}\)?-?\d{1}-?\d{1}-?\d{1}-?\d{1}-?\d{1}((-?\d{1})?-?\d{1})?/', $user['number'])) {
-        $msg .= 'Некоректный номер' . $user['number'] . PHP_EOL;
+    } elseif (!preg_match('/((8|\+7)-?)?\(?\d{3,5}\)?-?\d{1}-?\d{1}-?\d{1}-?\d{1}-?\d{1}((-?\d{1})?-?\d{1})?/',
+        $user['phone_number'])) {
+        $msg .= 'Некоректный номер' . $user['phone_number'] . PHP_EOL;
     }
 
     if (!empty($msg)) {
         $_SESSION['msg'] = $msg;
     } else {
         // Изменение номера перед отправкой в файл.
-        if (strpos($user['number'], '+') !== false) {
-            $user['number'] = str_replace('+', '', $user['number']);
-        } elseif (strlen($user['number']) === 10 && substr($user['number'], 0, 1) !== '7') {
-            $user['number'] = '7' . $user['number'];
-        } elseif (substr($user['number'], 0, 1) === '8') {
-            $user['number'] = '7' . substr($user['number'], 1);
+
+        $user['phone_number'] = str_replace(['+', '8'], '', $user['phone_number']);
+        if (strlen($user['phone_number']) === 10 && substr($user['phone_number'], 0, 1) !== '7') {
+            $user['phone_number'] = '7' . $user['phone_number'];
         }
 
         // Инициализируем данные пользователя
 
-        $name = $_POST['user_name'];
-        $email = $_POST['email'];
-        $password = md5($_POST['password']);
-        $number = $user['number'];
+        $name = $user['user_name'];
+        $email = $user['email'];
+        $password = md5($user['password']);
+        $phone = $user['phone_number'];
+        $profileImage = $_FILES['avatar'];
 
-        // Прописываем относительные пути до файлов
+        // Прописываем пути до файлов и директорий
 
-        $fileUsers = '../users/users.txt';
-        $directoryUsers = '../users';
+        $fileUsersData = __DIR__ . '\usersData\users.txt';
+        $fileUsersWay = __DIR__ . '\users\uploads\usersWay.txt';
 
-        // Создаем папку users, если ее нету
+        $directoryUsersData = __DIR__ . '\usersData';
+        $directoryUsers = __DIR__ . '\users';
+        $directoryUsersWay = __DIR__ . '\users\uploads\avatars\\';
 
-        if (!file_exists($directoryUsers)) {
-            mkdir('users', 0777, true);
+        // Создаем все нужные файлы и директории, если их не существует
+
+        $itemsDirectory = [$directoryUsersData, $directoryUsersWay];
+        foreach ($itemsDirectory as $item) {
+            if (!is_dir($item)) {
+                mkdir($item, 0777, true);
+            }
         }
 
-        // Создаем все нужные файлы, если их не существует
-
-        $items = [$fileUsers];
-        foreach ($items as $item) {
-            !file_exists($item) && file_put_contents($item, '');
+        $itemsFile = [$fileUsersData, $fileUsersWay];
+        foreach ($itemsFile as $item) {
+            fclose(fopen($item, 'a+b'));
         }
 
-        // Создаем новый айди пользователю
 
-        $dataUsers = file($fileUsers, FILE_IGNORE_NEW_LINES);
+        // Загружаем фото в профиль
 
-        $newId = !empty($dataUsers) ? (explode('|', end($dataUsers))[0] + 1) : 1;
+        // Инициализируем данные аватарки
 
-        // Проверяем данные нового пользователя, если они уже есть то не регистрируем
+        if (isset($_FILES['avatar'])) {
+            $file = $_FILES['avatar'];
 
-        $userExists = false;
+            // Проверка ошибок загрузки
+            if ($file['error'] === UPLOAD_ERR_OK) {
+                // Получение информации о файле
+                $fileName = $file['name'];
+                $fileSize = $file['size'];
+                $fileTmp = $file['tmp_name'];
+                $fileType = $file['type'];
+
+                // Проверка типа файла (пример для изображений)
+                $allowedTypes = array('image/jpeg', 'image/png', 'image/gif');
+                if (!in_array($fileType, $allowedTypes)) {
+                    $_SESSION['msg'] = 'Недопустимый тип файла.';
+                    header('Location: ../../views/registry.php');
+                    die;
+                }
+
+                // Проверка размера файла (пример для изображений, максимальный размер 1 МБ)
+                $maxFileSize = 1 * 1024 * 1024;
+                if ($fileSize > $maxFileSize) {
+                    $_SESSION['msg'] = "Размер файла превышает допустимый.";
+                    header('Location: ../../views/registry.php');
+                    die;
+                }
+                $fileName = uniqid() . $fileName;
+                // Переместить файл в папку назначения
+                if (move_uploaded_file($fileTmp, $directoryUsersWay . $fileName)) {
+                    $savePath = $directoryUsersWay . $fileName;
+
+                    $savePath = strstr($savePath, 'src');
+                    $savePath = '..\\' . $savePath;
+
+                    // Перемещаем загруженный файл в указанное место
+                    $_SESSION['msg'] = 'Файл успешно загружен!';
+                } else {
+                    $_SESSION['msg'] = 'Ошибка при перемещении файла.';
+                    header('Location: ../../views/registry.php');
+                    die;
+                }
+            } else {
+                $_SESSION['msg'] = 'Ошибка загрузки файла: ' . $file['error'];
+                header('Location: ../../views/registry.php');
+                die;
+            }
+        }
+
+        // Инициализируем данные всех пользователей
+
+        $dataUsers = file($fileUsersData, FILE_IGNORE_NEW_LINES);
+
+        // Получаем айди пользователя
+        $newId = $dataUsers ? intval(count($dataUsers)) + 1 : $newId = 1;
+        // Проверяем данные нового пользователя, если они уже есть то не регистрруем
+
+        $isUserExists = false;
         foreach ($dataUsers as $line) {
             $userData = explode('|', $line);
-            if ($userData[1] === $name || $userData[2] === $email || $userData[4] === $number) {
-                $userExists = true;
+            if ($userData[2] === $email || $userData[4] === $phone) {
+                $isUserExists = true;
                 break;
             }
         }
 
-        if ($userExists) {
+        if ($isUserExists) {
             $_SESSION['msg'] = 'Пользователь с этими данными уже зарегистрирован!';
             header('Location: ../../views/registry.php');
             die;
         }
-
         // Создаем строку с данными пользователя:
-
-        $userData = "$newId|$name|$email|$password|$number";
+        $userData = "{$newId}|{$name}|{$email}|{$password}|{$phone}";
+        if (!empty($savePath)) {
+            $userAva = "{$newId}|{$savePath}";
+        }
 
         // Блокировка файла:
-        $file = fopen($fileUsers, 'a');
-        if (flock($file, LOCK_EX)) {
-            // Записываем данные регистрации в файл
-            fwrite($file, $userData . PHP_EOL);
-            // Снимаем блокировку файла
-            flock($file, LOCK_UN);
+        $handlerData = fopen($fileUsersData, 'a + b') or die('Не удалось открыть файл');
+        $handlerAva = fopen($fileUsersWay, 'a + b') or die('Не удалось открыть файл путей');
+        if (flock($handlerData, LOCK_EX)) {
+            fwrite($handlerData, $userData . PHP_EOL);
+            if (!empty($savePath)) {
+                fwrite($handlerAva, $userAva . PHP_EOL);
+            }
+            flock($handlerData, LOCK_UN);
         } else {
             echo "Не удалось получить блокировку файла.";
         }
-
-        fclose($file);
+        fclose($handlerData);
         $_SESSION['msg'] = 'Регистрация успешно завершена!';
 
         header('Location: ../../views/registry.php');

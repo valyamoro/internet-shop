@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 error_reporting(-1);
 session_start();
@@ -7,9 +6,10 @@ session_start();
 if (!empty($_POST)) {
 
     $msg = false;
-
-    $user['email'] = $_POST['email'];
-    $user['password'] = $_POST['password'];
+    $user = [];
+    foreach ($_POST as $key => $val) {
+        $user[$key] = htmlspecialchars(strip_tags(trim($val)));
+    }
 
     // Валидация почты и пароля
 
@@ -36,25 +36,30 @@ if (!empty($_POST)) {
     }
     
     if (empty($msg)) {
-        $user = [];
-        foreach ($_POST as $key => $val) {
-            $user[$key] = htmlspecialchars(strip_tags(trim($val)));
-        }
 
         // Инициализируем почту и пароль
 
         $email = $user['email'];
         $password = md5($user['password']);
 
+
         // Забираем данные всех пользователей из users.txt
+        $fileUsersData = __DIR__ . '\usersData\users.txt';
+        $fileUsersWay = __DIR__ . '\users\uploads\usersWay.txt';
+        $linesData = file($fileUsersData);
+        $linesWay = file($fileUsersWay);
 
-        $fileUsers = file('../users/users.txt');
-//      $users = explode('|', $fileUsers);
+//        foreach ($lines as $line) {
+//            $userData = explode('|', $line);
+//            $users[] = $userData;
+//        }
+        $users = array_map(function($line) {
+            return explode('|', $line);
+        }, $linesData);
 
-        foreach ($fileUsers as $line) {
-            $userData = explode('|', $line);
-            $users[] = $userData;
-        }
+        $usersWay = array_map(function($line) {
+            return explode('|', $line);
+        }, $linesWay);
 
         // Перебор пользователей, получаем нужную строку
         // Проверяем все данные из $_POST с данными из файла
@@ -65,8 +70,10 @@ if (!empty($_POST)) {
             $user['username'] = $user[1];
             $user['email'] = $user[2];
             $user['password'] = $user[3];
-            $user['phone'] = $user[4];
-
+            $user['phone_number'] = $user[4];
+            foreach($usersWay as $lineWay) {
+                $user['image'] = $lineWay[1];
+            }
             if ($email == $user['email'] && $password == $user['password']) {
                 $flagAuth = true; // Если почта с паролем совпадает
                 break;
@@ -81,9 +88,11 @@ if (!empty($_POST)) {
                 'username' => $user['username'],
                 'email' => $user['email'],
 //              'password' => $user['password'],
-                'phone' => $user['phone'],
+                'phone' => $user['phone_number'],
+                'avatar' => $user['image'],
             ];
-            header('Location: ../../index.php');
+
+            header('Location: ../../views/profile.php');
             die;
         } else {
             $_SESSION['msg'] = 'Вы не авторизировались!';
@@ -92,7 +101,7 @@ if (!empty($_POST)) {
         }
     } else {
         $_SESSION['msg'] = $msg;
-        header('Location: ../../index.php');
+        header('Location: ../../views/profile.php');
         die;
     }
 }
