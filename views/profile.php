@@ -29,6 +29,7 @@ if (!$_SESSION['user']) {
     <a href="#"><?= $_SESSION['user']['username'] ?></a>
     <a href="#"><?= $_SESSION['user']['phone'] ?></a>
     <a href="#"><?= $_SESSION['user']['email'] ?></a>
+    <img width="200" height="200" src="<?= $_SESSION['user']['avatar']?>" alt="">
 </form>
 </body>
 </html>
