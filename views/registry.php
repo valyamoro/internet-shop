@@ -1,6 +1,9 @@
 <?php
 
+include '../src/models/errors/error_handler.php';
 session_start();
+
+
 
 if ($_SESSION['user']) {
     header('Location: ../index.php');
@@ -22,7 +25,7 @@ if ($_SESSION['user']) {
                 <?php echo nl2br($_SESSION['usr_er']); ?>
                 <?php unset($_SESSION['usr_er']); ?> 
             <?php endif; ?> 
-            <form action="../src/models/registry_handler.php" method="post" enctype="multipart/form-data">
+            <form action="../src/models/Auth/registry_handler.php" method="post" enctype="multipart/form-data">
                 Name <input type="text" name="user_name" placeholder="Введите Логин"><br>
                 Email <input type="text" name="email" placeholder="Введите почту"><br>
                 Password <input type="password" name="password" placeholder="Введите пароль"><br>

@@ -17,7 +17,7 @@ if ($_SESSION['user']) {
 </head>
     <body>
         <div>
-            <form action="../src/models/login_handler.php" method="post">
+            <form action="../src/models/Auth/login_handler.php" method="post">
                 Email <input type="text" name="email" placeholder="Введите почту"><br>
                 Password <input type="password" name="password" placeholder="Введите пароль"><br>
                 <input type="submit" value="Отправить">

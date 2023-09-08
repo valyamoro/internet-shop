@@ -9,8 +9,10 @@
 <body>
 <ul>
     <li><a href="index.php">Хоум</a></li>
-    <li><a href="views/login.php">Логинизация</a></li>
-    <li><a href="views/registry.php">Регистринизация</a></li>
-    <li style="float:right"><a class="active" href="src/models/logout_handler.php">Выход</a></li>
+    <li><a href="views/login.php">Вход</a></li>
+    <li><a href="views/registry.php">Регистрация</a></li>
+    <li style="float:right"><a class="active" href="src/models/Auth/logout_handler.php">Выход</a></li>
 </ul>
 </body>
+
+// Ссылка нв все товары.
