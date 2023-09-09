@@ -15,7 +15,6 @@ $filteredUsers = array_filter($dataUsers, function ($q) use ($username) {
 
 if (!empty($filteredUsers)) {
     $foundUser = explode('|', reset($filteredUsers));
-
 }
 
 $dataWayToAvatar = file($pathUsersWay, FILE_IGNORE_NEW_LINES);

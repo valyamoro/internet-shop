@@ -20,10 +20,10 @@ if (file_exists($envFilePath)) {
 }
 
 if ($projectType === 'debug') {
-    ini_set('display_errors', '1'); // Ошибки выводятся в режиме отладки
-    error_reporting(E_ALL); // Все ошибки выводятся в режиме отладки
+    ini_set('display_errors', '1');
+    error_reporting(E_ALL);
 } elseif ($projectType === 'production') {
-    ini_set('display_errors', '0'); // Ошибки выводятся в режиме отладки
-    error_reporting(0); // Все ошибки выводятся в режиме отладки
+    ini_set('display_errors', '0');
+    error_reporting(0);
 }
 

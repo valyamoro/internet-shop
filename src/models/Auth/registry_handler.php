@@ -116,7 +116,7 @@ if (!empty($_POST)) {
         move_uploaded_file($tmpName, $filePath);
 
         // Инициализация пути в storage_files/user_way.txt .
-        $filePath = '..\\' . strstr($filePath, 'src'); // Тут уже новые пути, поменять *
+        $filePath = '..\\' . strstr($filePath, 'src');
 
         // Получаем данные массивов всех пользователей из user.txt в виде строки.
         $dataUsers = file($pathUsersData, FILE_IGNORE_NEW_LINES);
