@@ -1,29 +1,22 @@
 <?php
 
-$projectType = null;
-$envFilePath = '../../../env.txt';
+$filePath = __DIR__ . '/../../../env.txt';
 
-if (file_exists($envFilePath)) {
-    // Чтение содержимого файла .env
-    $envContents = file_get_contents($envFilePath);
+if (!file_exists($filePath)) {
+    echo 'Файла env.txt не существует!';
+    die;
+} else {
+    // Получаю содержимое файла env.txt.
+    $result = file($filePath, FILE_IGNORE_NEW_LINES);
+    $env = [];
 
-
-    // Парсинг переменных окружения
-    $envLines = explode("\n", $envContents);
-    foreach ($envLines as $line) {
-        list($key, $value) = explode('=', $line, 2);
-        if ($key === 'TYPE_OF_PROJECT') {
-            $projectType = trim($value);
-            break;
-        }
+    // Получаю значение типа проекта.
+    foreach ($result as $value) {
+        $v = explode('=', $value);
+        $env[$v[0]] = trim($v[1]);
     }
 }
 
-if ($projectType === 'debug') {
-    ini_set('display_errors', '1');
-    error_reporting(E_ALL);
-} elseif ($projectType === 'production') {
-    ini_set('display_errors', '0');
-    error_reporting(0);
-}
+error_reporting($env['TYPE_OF_PROJECT'] === 'prod' ? 0: -1);
+
 

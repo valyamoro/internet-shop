@@ -20,30 +20,30 @@ include '../src/models/products/product_handler.php';
         echo '<h2>' . $product['name'] . '</h2>';
         echo '<p>' . $product['description'] . '</p>';
         echo '<p>Цена: ' . $product['price'] . '</p>';
+        echo '<p>Количество: ' . $product['count'] . '</p>';
         echo '</div>';
         echo '----------------------------------';
     }
 
 
-
-    // Выведите ссылки для перехода между страницами
-    echo '<div class="pagination">';
-    if ($currentPage > 1) {
-        echo '<a href="?page=' . ($currentPage - 1) . '">Предыдущая страница</a>';
-    }
-    for ($i = 1; $i <= $totalPages; $i++) {
-        if ($i == $currentPage) {
-            echo '<span>' . $i . '</span>';
-        } else {
-            echo '<a href="?page=' . $i . '">' . $i . '</a>';
-        }
-    }
-    if ($currentPage < $totalPages) {
-        echo '<a href="?page=' . ($currentPage + 1) . '">Следующая страница</a>';
-    }
-    echo '</div>';
-
     ?>
+    <?php if ($totalPages > 1): // Проверяем, есть ли больше одной страницы для пагинации ?>
+    <div class="pagination">
+        <?php if ($currentPage > 1): ?>
+            <a href="?page=<?php echo ($currentPage - 1); ?>">Предыдущая страница</a>
+        <?php endif ?>
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <?php if ($i == $currentPage): ?>
+                <span><?php echo $i; ?></span>
+            <?php else: ?>
+                <a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+            <?php endif ?>
+        <?php endfor ?>
+        <?php if ($currentPage < $totalPages): ?>
+            <a href="?page=<?php echo ($currentPage + 1); ?>">Следующая страница</a>
+        <?php endif ?>
+    </div>
+    <?php endif; ?>
 </body>
 </html>
 
