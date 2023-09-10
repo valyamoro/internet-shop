@@ -1,6 +1,6 @@
 <?php
 
-include '../src/models/errors/error_handler.php';
+//include '../src/models/errors/error_handler.php';
 session_start();
 
 

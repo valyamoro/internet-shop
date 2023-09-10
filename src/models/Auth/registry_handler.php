@@ -32,11 +32,11 @@ if (!empty($msg)) {
     }
 
     // Путь до файлов хранения данных пользователя.
-    $usersData = __DIR__ . '\..\..\..\storage_files\user.txt';
-    $usersAvatarData = __DIR__ . '\..\..\..\storage_files\user_way.txt';
+    $usersDataFilePath = __DIR__ . '\..\..\..\storage_files\user.txt';
+    $usersAvatarDataFilePath = __DIR__ . '\..\..\..\storage_files\user_way.txt';
 
     // Создаются новые файлы, если их не существует.
-    $itemsFile = [$usersData, $usersAvatarData];
+    $itemsFile = [$usersDataFilePath, $usersAvatarDataFilePath];
     foreach ($itemsFile as $item) {
         fclose(fopen($item, 'a+b'));
     }
@@ -50,7 +50,7 @@ if (!empty($msg)) {
     $filePath = '..\\' . strstr($filePath, 'src');
 
     // Получаем данные массивов всех пользователей из user.txt в виде строки.
-    $dataUsers = file($usersData, FILE_IGNORE_NEW_LINES);
+    $dataUsers = file($usersDataFilePath, FILE_IGNORE_NEW_LINES);
 
     // Создаем идентификатор новому пользователю.
     $userId = $dataUsers ? (intval(explode('|', end($dataUsers))[0]) + 1) : 1; // вернул обратно end *
@@ -72,7 +72,7 @@ if (!empty($msg)) {
     }
 
     // Блокировка файлов:
-    $handlerDataUser = fopen($usersData, 'a + b');
+    $handlerDataUser = fopen($usersDataFilePath, 'a + b');
 
     if (!flock($handlerDataUser, LOCK_EX)) {
         $_SESSION['msg'] = 'Не удалось зарегистрироваться, повторите попытку позже!';
@@ -90,7 +90,7 @@ if (!empty($msg)) {
 
     }
 
-    $handlerAvatar = fopen($usersAvatarData, 'a + b');
+    $handlerAvatar = fopen($usersAvatarDataFilePath, 'a + b');
 
     if (!flock($handlerAvatar, LOCK_EX)) {
         $_SESSION['msg'] = 'Не удалось зарегистрироваться, повторите попытку позже!';

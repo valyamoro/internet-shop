@@ -1,5 +1,5 @@
 <?php
-include '../src/models/errors/error_handler.php';
+//include '../src/models/errors/error_handler.php';
 // Текущая страница.
 $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
 
@@ -30,6 +30,7 @@ $startIndex = ($currentPage - 1) * $itemsPerPage;
 $totalPages = ceil(count($products) / $itemsPerPage);
 
 foreach ($products as &$product) {
+    $product['id'] = $product[0];
     $product['image'] = $product[6];
     $product['name'] = $product[1];
     $product['count'] = $product[5];

@@ -3,13 +3,8 @@ declare(strict_types=1);
 error_reporting(-1);
 session_start();
 
+// Валидация пришедных данных из $_POST.
 include 'validation/validation_login.php';
-
-/**
- * @param array $foundUser
- * @param $foundUserAvatar
- * @return array
- */
 
 if (!empty($msg)) {
     $_SESSION['msg'] = $msg;
@@ -37,7 +32,6 @@ if (!empty($msg)) {
         header('Location: login.php');
         die;
     }
-
     // Получаю данные из user_way.txt .
     $avatarData = file($pathUsersWay, FILE_IGNORE_NEW_LINES);
 
@@ -54,7 +48,6 @@ if (!empty($msg)) {
     $currentUserAvatar = explode('|', reset($approvedAvatarUsers));
 
     // Если нет данных о пути до аватара, то первый элемент массива $currentUserAvatar определяется как not_found
-    $currentUserAvatar[1] = $currentUserAvatar[1] ?? 'not_found';
 
     // Записываю в сессию пользователя.
     $_SESSION['msg'] = 'Вы авторизировались!';
