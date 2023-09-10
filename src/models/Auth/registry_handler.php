@@ -50,7 +50,7 @@ if (!empty($msg)) {
     $filePath = '..\\' . strstr($filePath, 'src');
 
     // Получаем данные массивов всех пользователей из user.txt в виде строки.
-    $dataUsers = file($usersData, FILE_IGNORE_NEW_LINES);
+    $dataUsers = file($usersDataFilePath, FILE_IGNORE_NEW_LINES);
 
     // Создаем идентификатор новому пользователю.
     $userId = $dataUsers ? (intval(explode('|', end($dataUsers))[0]) + 1) : 1; // вернул обратно end *
@@ -72,7 +72,7 @@ if (!empty($msg)) {
     }
 
     // Блокировка файлов:
-    $handlerDataUser = fopen($usersData, 'a + b');
+    $handlerDataUser = fopen($usersDataFilePath, 'a + b');
 
     if (!flock($handlerDataUser, LOCK_EX)) {
         $_SESSION['msg'] = 'Не удалось зарегистрироваться, повторите попытку позже!';
@@ -90,7 +90,7 @@ if (!empty($msg)) {
 
     }
 
-    $handlerAvatar = fopen($usersAvatarData, 'a + b');
+    $handlerAvatar = fopen($usersAvatarDataFilePath, 'a + b');
 
     if (!flock($handlerAvatar, LOCK_EX)) {
         $_SESSION['msg'] = 'Не удалось зарегистрироваться, повторите попытку позже!';
