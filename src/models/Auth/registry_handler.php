@@ -60,8 +60,6 @@ if (!empty($msg)) {
     // Создаем идентификатор новому пользователю.
     $userId = $dataUsers ? (intval(explode('|', end($dataUsers))[0]) + 1) : 1; // вернул обратно end *
 
-    // Приходящие данные из $_POST. // удалить? *
-
     // Проверяем есть ли аккаунт с такой же почтой и телефоном в user.txt.
     $isUserExists = false;
     foreach ($dataUsers as $line) {
