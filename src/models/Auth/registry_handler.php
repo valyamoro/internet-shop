@@ -32,11 +32,11 @@ if (!empty($msg)) {
     }
 
     // Путь до файлов хранения данных пользователя.
-    $usersData = __DIR__ . '\..\..\..\storage_files\user.txt';
-    $usersAvatarData = __DIR__ . '\..\..\..\storage_files\user_way.txt';
+    $usersDataFilePath = __DIR__ . '\..\..\..\storage_files\user.txt';
+    $usersAvatarDataFilePath = __DIR__ . '\..\..\..\storage_files\user_way.txt';
 
     // Создаются новые файлы, если их не существует.
-    $itemsFile = [$usersData, $usersAvatarData];
+    $itemsFile = [$usersDataFilePath, $usersAvatarDataFilePath];
     foreach ($itemsFile as $item) {
         fclose(fopen($item, 'a+b'));
     }
