@@ -44,14 +44,12 @@ if (!empty($msg)) {
     // Инициализации информации о пришедшем файле. Временный путь до файла и название файла.
     $tmpName = $avatar['tmp_name'];
 
-    $avatarName = $avatar['name']; // зачем нужно создавать переменную? *
-
     // Путь до места хранения аватара пользователя.
     $filePath = $pathDirectoryUploadAvatar . uniqid() . $avatar['name'];
     // Загрузка аватара пользователя из временного файла в постоянный.
     move_uploaded_file($tmpName, $filePath);
 
-    // Инициализация пути в storage_files/user_way.txt .
+    // Записываю путь до изображения в storage_files/user_way.txt .
     $filePath = '..\\' . strstr($filePath, 'src');
 
     // Получаем данные массивов всех пользователей из user.txt в виде строки.
@@ -76,7 +74,7 @@ if (!empty($msg)) {
         die;
     }
 
-    // Блокировка файла:
+    // Блокировка файлов:
     $handlerDataUser = fopen($usersData, 'a + b');
 
     if (!flock($handlerDataUser, LOCK_EX)) {
