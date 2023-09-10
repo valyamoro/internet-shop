@@ -3,25 +3,7 @@ declare(strict_types=1);
 error_reporting(-1);
 session_start();
 
-if (!empty($_POST)) {
-
-    $msg = false;
-
-    extract($_POST);
-
-    // Валидация почты и пароля.
-
-    if (empty($email)) {
-        $msg .= 'Заполните поле почты' . PHP_EOL;
-    } elseif (!preg_match("/[0-9a-z]+@[a-z]/", $email)) {
-        $msg .= 'Почта содержит недопустимые данные' . PHP_EOL;
-    }
-
-    if (empty($password)) {
-        $msg .= 'Заполните поле пароль' . PHP_EOL;
-    }
-
-}
+include 'validation/validation_login.php';
 
 /**
  * @param array $foundUser
@@ -30,8 +12,8 @@ if (!empty($_POST)) {
  */
 
 if (!empty($msg)) {
-    $_SESSION['error'] = $msg;
-    header('Location: ../../views/login.php');
+    $_SESSION['msg'] = $msg;
+    header('Location: ../../../views/login.php');
     die;
 } else {
     // Путь до файлов хранения данных пользователя.
