@@ -15,4 +15,24 @@
 </ul>
 </body>
 
-// Ссылка нв все товары.
+<?php
+// Массив с данными продуктов (ваша база данных или какие-то тестовые данные)
+$products = array(
+    array('id' => 1, 'name' => 'Продукт 1', 'price' => 10.99),
+    array('id' => 2, 'name' => 'Продукт 2', 'price' => 19.99),
+    array('id' => 3, 'name' => 'Продукт 3', 'price' => 5.99),
+);
+
+// Проверяем, что запрос идет к URL "/person/products"
+if ($_SERVER['REQUEST_URI'] === '/person/products') {
+    // Устанавливаем заголовок для ответа в формате JSON
+    header('Content-Type: application/json');
+
+    // Отправляем данные в формате JSON
+    echo json_encode($products);
+} else {
+    // Возвращаем ошибку 404, если URL не соответствует ожидаемому
+    http_response_code(404);
+    echo json_encode(array('message' => 'Страница не найдена'));
+}
+

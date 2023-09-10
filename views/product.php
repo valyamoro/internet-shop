@@ -22,8 +22,12 @@ include '../src/models/products/product_handler.php';
         echo '<p>Цена: ' . $product['price'] . '</p>';
         echo '<p>Количество: ' . $product['count'] . '</p>';
         echo '</div>';
+        echo '<form action="../src/controllers/BasketController.php" method="post">
+                    <input type="submit" name="id_product" value="Добавить товар в козину">
+              </form>';
         echo '----------------------------------';
     }
+
 
 
     ?>
