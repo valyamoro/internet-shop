@@ -109,7 +109,7 @@ if (!empty($msg)) {
     // Загрузка аватара пользователя из временного файла в постоянный.
     move_uploaded_file($tmpName, $filePath);
 
-    // Инициализация пути в storage_files/user_way.txt .
+    // Записываю путь до изображения в storage_files/user_way.txt .
     $filePath = '..\\' . strstr($filePath, 'src');
 
     // Получаем данные массивов всех пользователей из user.txt в виде строки.
@@ -117,8 +117,6 @@ if (!empty($msg)) {
 
     // Создаем идентификатор новому пользователю.
     $userId = $dataUsers ? (intval(explode('|', end($dataUsers))[0]) + 1) : 1; // вернул обратно end *
-
-    // Приходящие данные из $_POST.
 
     // Проверяем есть ли аккаунт с такой же почтой и телефоном в user.txt.
     $isUserExists = false;
@@ -136,7 +134,7 @@ if (!empty($msg)) {
         die;
     }
 
-    // Блокировка файла:
+    // Блокировка файлов:
     $handlerDataUser = fopen($usersData, 'a + b');
 
     if (!flock($handlerDataUser, LOCK_EX)) {
