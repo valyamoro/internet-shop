@@ -41,13 +41,10 @@ if (!empty($msg)) {
         fclose(fopen($item, 'a+b'));
     }
 
-    // Инициализации информации о пришедшем файле. Временный путь до файла и название файла.
-    $tmpName = $avatar['tmp_name'];
-
     // Путь до места хранения аватара пользователя.
     $filePath = $pathDirectoryUploadAvatar . uniqid() . $avatar['name'];
     // Загрузка аватара пользователя из временного файла в постоянный.
-    move_uploaded_file($tmpName, $filePath);
+    move_uploaded_file($avatar['tmp_name'], $filePath);
 
     // Записываю путь до изображения в storage_files/user_way.txt .
     $filePath = '..\\' . strstr($filePath, 'src');
@@ -82,11 +79,10 @@ if (!empty($msg)) {
         die;
     } else {
         // Приходящие данные из $_POST.
-        $name = $user_name;
         $password = password_hash($password, PASSWORD_DEFAULT);
 
         // Формируем строку с данными пользователя.
-        $userData = "{$userId}|{$name}|{$email}|{$password}|{$phone_number}";
+        $userData = "{$userId}|{$user_name}|{$email}|{$password}|{$phone_number}";
         // Записываем данные пользователя в user.txt.
         fwrite($handlerDataUser, $userData . PHP_EOL);
 
