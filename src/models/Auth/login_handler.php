@@ -1,10 +1,10 @@
 <?php
-// попробовать применить levenshtein
+// попробовать применить levenshtein *
 declare(strict_types=1);
 error_reporting(-1);
 session_start();
 
-// ПОПРОБОВАТЬ ИСПОЛЬЗОВАТЬ ДЕСТРУКТУРИЗАЦИЮ $_POST!!!
+// ПОПРОБОВАТЬ ИСПОЛЬЗОВАТЬ ДЕСТРУКТУРИЗАЦИЮ $_POST *
 // Валидация пришедных данных из $_POST.
 include __DIR__ . '/validation/validation_login.php';
 
