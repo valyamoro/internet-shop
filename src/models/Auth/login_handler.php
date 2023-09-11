@@ -1,8 +1,10 @@
 <?php
+// попробовать применить levenshtein
 declare(strict_types=1);
 error_reporting(-1);
 session_start();
 
+// ПОПРОБОВАТЬ ИСПОЛЬЗОВАТЬ ДЕСТРУКТУРИЗАЦИЮ $_POST!!!
 // Валидация пришедных данных из $_POST.
 include __DIR__ . '/validation/validation_login.php';
 
@@ -18,14 +20,15 @@ if (!empty($msg)) {
     // Получаю данные всех пользователей в виде строк.
     $dataUsers = file($pathUsersData, FILE_IGNORE_NEW_LINES);
 
-    // Получаю элемент массива с данными ввиде строки авторизированного пользователя.
+    // Получаю строку с данными найденного пользователя.
     $approvedUsers = array_filter($dataUsers, function ($q) use ($email, $password) {
         $user = explode('|', $q);
         return $user[2] === $email && password_verify($password, $user[3]);
     });
 
-    // Разбиваю строку на элементы массивов, создавая двумерный массив.
+
     if (!empty($approvedUsers)) {
+        // Разбиваю строку с данными пользователя на элементы массива
         $currentUser = explode('|', reset($approvedUsers));
     } else {
         $_SESSION['msg'] = 'Неверные данные';
@@ -35,7 +38,7 @@ if (!empty($msg)) {
     // Получаю данные из user_way.txt .
     $avatarData = file($pathUsersWay, FILE_IGNORE_NEW_LINES);
 
-    // Получаю текущий айди авторизированного пользователя.
+    // Получаю айди текущего авторизированного пользователя.
     $currentId = $currentUser[0];
 
     // Получаю айди и путь до аватарки авторизированного пользователя.
@@ -46,8 +49,6 @@ if (!empty($msg)) {
 
     // Разбиваю строку с данными пользователя на элементы массива.
     $currentUserAvatar = explode('|', reset($approvedAvatarUsers));
-
-    // Если нет данных о пути до аватара, то первый элемент массива $currentUserAvatar определяется как not_found
 
     // Записываю в сессию пользователя.
     $_SESSION['msg'] = 'Вы авторизировались!';
