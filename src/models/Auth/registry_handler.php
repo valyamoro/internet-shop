@@ -5,7 +5,7 @@ session_start();
 
 // Валидация пришедших данных из $_POST и $_FILES.
 
-include 'validation/validation_registry.php';
+include __DIR__ . '/validation/validation_registry.php';
 
 if (!empty($msg)) {
     $_SESSION['msg'] = $msg;

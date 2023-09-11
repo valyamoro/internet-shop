@@ -4,7 +4,7 @@ error_reporting(-1);
 session_start();
 
 // Валидация пришедных данных из $_POST.
-include 'validation/validation_login.php';
+include __DIR__ . '/validation/validation_login.php';
 
 if (!empty($msg)) {
     $_SESSION['msg'] = $msg;
