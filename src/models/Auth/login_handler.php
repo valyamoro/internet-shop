@@ -4,7 +4,7 @@ declare(strict_types=1);
 error_reporting(-1);
 session_start();
 
-// ПОПРОБОВАТЬ ИСПОЛЬЗОВАТЬ ДЕСТРУКТУРИЗАЦИЮ $_POST!!! *
+// ПОПРОБОВАТЬ ИСПОЛЬЗОВАТЬ ДЕСТРУКТУРИЗАЦИЮ $_POST *
 // Валидация пришедных данных из $_POST.
 include __DIR__ . '/validation/validation_login.php';
 
@@ -18,13 +18,35 @@ if (!empty($msg)) {
     $pathUsersWay = __DIR__ . '\..\..\..\storage_files\user_way.txt';
 
     // Получаю данные всех пользователей в виде строк.
-    $dataUsers = file($pathUsersData, FILE_IGNORE_NEW_LINES);
+//    $dataUsers = file($pathUsersData, FILE_IGNORE_NEW_LINES);
 
     // Получаю строку с данными найденного пользователя.
-    $approvedUsers = array_filter($dataUsers, function ($q) use ($email, $password) {
-        $user = explode('|', $q);
-        return $user[2] === $email && password_verify($password, $user[3]);
-    });
+//    $approvedUsers = array_filter($dataUsers, function ($q) use ($email, $password) {
+//        $user = explode('|', $q);
+//        return $user[2] === $email && password_verify($password, $user[3]);
+//    });
+
+    include __DIR__ . '/../../../vendor/core/User/functions/readUserData.php';
+    $str = readUserData($pathUsersData);
+
+    print_r($str);
+    die;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     if (!empty($approvedUsers)) {
