@@ -1,10 +1,8 @@
 <?php
-// попробовать применить levenshtein *
 declare(strict_types=1);
 error_reporting(-1);
 session_start();
 
-// ПОПРОБОВАТЬ ИСПОЛЬЗОВАТЬ ДЕСТРУКТУРИЗАЦИЮ $_POST *
 // Валидация пришедных данных из $_POST.
 include __DIR__ . '/validation/validation_login.php';
 
@@ -26,28 +24,27 @@ if (!empty($msg)) {
         return $user[2] === $email && password_verify($password, $user[3]);
     });
 
-
-    if (!empty($approvedUsers)) {
-        // Разбиваю строку с данными пользователя на элементы массива
-        $currentUser = explode('|', reset($approvedUsers));
-    } else {
+    if (empty($approvedUsers)) {
         $_SESSION['msg'] = 'Неверные данные';
         header('Location: login.php');
         die;
+    } else {
+        // Разбиваю строку с данными пользователя на элементы массива
+        $currentUser = explode('|', reset($approvedUsers));
     }
     // Получаю данные из user_way.txt .
     $avatarData = file($pathUsersWay, FILE_IGNORE_NEW_LINES);
 
-    // Получаю айди текущего авторизированного пользователя.
+    // Получаю айди текущего пользователя.
     $currentId = $currentUser[0];
 
-    // Получаю айди и путь до аватарки авторизированного пользователя.
+    // Получаю путь до аватара текущего пользователя.
     $approvedAvatarUsers = array_filter($avatarData, function ($q) use ($currentId) {
         $user = explode('|', $q);
         return $user[0] === $currentId;
     });
 
-    // Разбиваю строку с данными пользователя на элементы массива.
+    // Разбиваю строку с данными аватара пользователя на элементы массива.
     $currentUserAvatar = explode('|', reset($approvedAvatarUsers));
 
     // Записываю в сессию пользователя.

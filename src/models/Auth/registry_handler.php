@@ -4,7 +4,6 @@ error_reporting(-1);
 session_start();
 
 // Валидация пришедших данных из $_POST и $_FILES.
-
 include __DIR__ . '/validation/validation_registry.php';
 
 if (!empty($msg)) {
@@ -17,7 +16,6 @@ if (!empty($msg)) {
     if (strlen($phone_number) === 10 && substr($phone_number, 0, 1) !== '7') {
         $phone_number = '7' . $phone_number;
     }
-
     // Путь до файлов хранения различных данных.
     $pathDirectoryStorage = __DIR__ . '\..\..\..\storage_files';
     $pathDirectoryUpload = __DIR__ . '\..\..\..\uploads';
@@ -31,7 +29,7 @@ if (!empty($msg)) {
         }
     }
 
-    // Путь до файлов хранения данных пользователя.
+    // Путь до файлов c данными пользователя.
     $usersDataFilePath = __DIR__ . '\..\..\..\storage_files\user.txt';
     $usersAvatarDataFilePath = __DIR__ . '\..\..\..\storage_files\user_way.txt';
 
@@ -41,7 +39,7 @@ if (!empty($msg)) {
         fclose(fopen($item, 'a+b'));
     }
 
-    // Путь до места хранения аватара пользователя.
+    // Путь до файла с данными аватара пользователя.
     $filePath = $pathDirectoryUploadAvatar . uniqid() . $avatar['name'];
     // Загрузка аватара пользователя из временного файла в постоянный.
     move_uploaded_file($avatar['tmp_name'], $filePath);
@@ -53,7 +51,7 @@ if (!empty($msg)) {
     $dataUsers = file($usersDataFilePath, FILE_IGNORE_NEW_LINES);
 
     // Создаем идентификатор новому пользователю.
-    $userId = $dataUsers ? (intval(explode('|', end($dataUsers))[0]) + 1) : 1; // вернул обратно end *
+    $userId = $dataUsers ? (intval(explode('|', end($dataUsers))[0]) + 1) : 1;
 
     // Проверяем есть ли аккаунт с такой же почтой и телефоном в user.txt.
     $isUserExists = false;
@@ -87,7 +85,6 @@ if (!empty($msg)) {
         fwrite($handlerDataUser, $userData . PHP_EOL);
 
         flock($handlerDataUser, LOCK_UN);
-
     }
 
     $handlerAvatar = fopen($usersAvatarDataFilePath, 'a + b');

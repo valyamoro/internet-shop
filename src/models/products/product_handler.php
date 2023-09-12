@@ -12,7 +12,6 @@ if ($currentPage < 1) {
 $itemsPerPage = 4;
 
 // Путь до товаров.
-
 $pathProductData = __DIR__ . '/../../../storage_files/product.txt';
 
 // Получаю данные о товарах.
