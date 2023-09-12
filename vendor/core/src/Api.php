@@ -7,6 +7,7 @@ session_start();
 if (empty($_POST)) {
     echo 'Что-то пошло не так...';
 } else {
+
     $id = $_SESSION['user']['id'];
 
     $apiKey = uniqid();

@@ -16,14 +16,16 @@ if (!empty($msg)) {
     $pathUsersWay = __DIR__ . '\..\..\..\storage_files\user_way.txt';
 
     // Получаю данные всех пользователей в виде строк.
-    $dataUsers = file($pathUsersData, FILE_IGNORE_NEW_LINES);
+    include '../../../vendor/core/User/algorithms/binarySearchUser.php';
+    include '../../../vendor/core/User/functions/readUserData.php';
+    // Функция для получения данных всех пользователей .
+    $userData = readUserData($pathUsersData);
+    //
+    $resultSearch = binarySearch($userData, $email);
 
-    // Получаю строку с данными найденного пользователя.
-    $approvedUsers = array_filter($dataUsers, function ($q) use ($email, $password) {
-        $user = explode('|', $q);
-        return $user[2] === $email && password_verify($password, $user[3]);
-    });
+    print_r($resultSearch);
 
+    die;
     if (empty($approvedUsers)) {
         $_SESSION['msg'] = 'Неверные данные';
         header('Location: login.php');
