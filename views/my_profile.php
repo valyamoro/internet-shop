@@ -6,6 +6,9 @@ if (!$_SESSION['user']) {
     header('Location: login.php');
 }
 
+print_r($_SESSION['user']);
+die;
+
 ?>
 
 <!DOCTYPE html>
