@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/../../../classes/Autoloader.php';
+Autoloader::register();
+
 $filePath = __DIR__ . '/../../../env.txt';
 
 if (!file_exists($filePath)) {
