@@ -32,6 +32,7 @@ if (!empty($msg)) {
         // Разбиваю строку с данными пользователя на элементы массива
         $currentUser = explode('|', reset($approvedUsers));
     }
+
     // Получаю данные из user_way.txt .
     $avatarData = file($pathUsersWay, FILE_IGNORE_NEW_LINES);
 
