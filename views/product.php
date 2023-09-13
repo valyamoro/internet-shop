@@ -1,4 +1,9 @@
 <?php
+session_start();
+
+if (!$_SESSION['user']) {
+    die;
+}
 
 include '../src/models/products/product_handler.php';
 include '../src/models/products/basket_handler.php';
@@ -54,6 +59,9 @@ include '../src/models/products/pagination.php';
             </tr>
             </tbody>
         </table>
+        <form action="../src/models/Auth/orders/order_handler.php">
+            <input type="submit">Подтвердить</input>
+        </form>
         <?php
     } else {
         ?>

@@ -22,7 +22,6 @@ if (!empty($_GET['action']))
                     );
                 }
             }
-
             break;
         case "remove":
             if (!empty($_SESSION["cart_item"])) {
@@ -46,4 +45,3 @@ if (!empty($_GET['action']))
             break;
 
     }
-?>
