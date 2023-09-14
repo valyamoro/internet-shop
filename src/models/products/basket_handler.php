@@ -43,5 +43,4 @@ if (!empty($_GET['action']))
         case "empty":
             unset($_SESSION["cart_item"]);
             break;
-
     }
