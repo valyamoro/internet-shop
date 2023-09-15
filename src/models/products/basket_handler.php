@@ -1,19 +1,18 @@
 <?php
+
 $currentProduct = explode('|', reset($incomingProduct));
 
 if (!empty($_GET['action'])) {
     switch ($_GET['action']) {
         case "add":
-            // Нужна ли проверка на наличие значения переменной $_POST['quantity']? *
-            if ($_POST["quantity"] > 0) {
+            if (!$_POST["quantity"] > 0) {
+                echo 'Количество должно быть больше нуля!';
+            } else {
                 $quantity = intval($_POST["quantity"]);
                 $code = $currentProduct[0];
 
-                if (isset($_SESSION["cart_item"][$code])) {
-                    // Товар с таким кодом уже есть в корзине
-                    $_SESSION["cart_item"][$code]["quantity"] += $quantity;
-                } else {
-                    // Товара с таким кодом нет в корзине, добавляем его
+                if (!isset($_SESSION["cart_item"][$code])) {
+                    // Если товара с таким кодом нет в корзине, добавляем его
                     $_SESSION["cart_item"][$code] = array(
                         'name' => $currentProduct[2],
                         'code' => $code,
@@ -21,11 +20,16 @@ if (!empty($_GET['action'])) {
                         'price' => $currentProduct[4],
                         'image' => $currentProduct[5],
                     );
+                } else {
+                    // Товар с таким кодом уже есть в корзине
+                    $_SESSION["cart_item"][$code]["quantity"] += $quantity;
                 }
             }
             break;
         case "remove":
-            if (!empty($_SESSION["cart_item"])) {
+            if (empty($_SESSION["cart_item"])) {
+                echo 'Карточка с товаром по какой-то причине пуста!';
+            } else {
                 foreach($_SESSION["cart_item"] as $key => $value) {
                     $quantity = intval($_GET["quantity"]);
                     $code = $_GET['code'];
