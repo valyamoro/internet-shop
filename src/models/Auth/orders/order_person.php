@@ -68,6 +68,7 @@ if ($fileOrderProduct) {
     echo 'не удалоцй';
 }
 
+
 $productPath = __DIR__ . '/../../../../storage_files/product.txt';
 
 $products = [];
@@ -92,18 +93,37 @@ if ($fileProduct) {
 
             }
         }
+            $priceProducts[] = $parts[4]; // Добавляем только один раз
     }
-    foreach ($countPerProduct as $count) {
-        $productInfo['countProductOrder'] = $count; // Устанавливаем текущее значение $count
-        $totalPrice[] = $count * $parts[4]; // Добавляем только один раз
+
+    if (count($priceProducts) === count($countPerProduct)) {
+        $result = [];
+
+        for ($i = 0; $i < count($priceProducts); $i++) {
+            $result[] = $priceProducts[$i] * $countPerProduct[$i];
+        }
+
+    } else {
+        echo 'Массивы имеют разную длину';
     }
+
+    $finalPrice = array_sum($result);
+
+
     fclose($fileProduct);
 }
 
 // Блок с выводом заказов:
 
-if ($userId === $_SESSION['user']['id']) {
-    echo "Заказы для пользователя с ID $userIdToDisplay: ";
-    echo "Финальная цена: $totalPrice[0]";
+$dataOrder = file($orderPath, FILE_IGNORE_NEW_LINES);
+
+$countOrder = count($dataOrder);
+
+while ($countOrder > 0) {
+    echo "Заказы для пользователя с ID $userIdToDisplay: <br>" ;
+    echo "Финальная цена: $finalPrice <br>";
+    echo '---------------------------------';
+    $countOrder--;
 }
+
 
