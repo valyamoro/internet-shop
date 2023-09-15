@@ -1,10 +1,11 @@
 <?php
 $currentProduct = explode('|', reset($incomingProduct));
 
-if (!empty($_GET['action']))
+if (!empty($_GET['action'])) {
     switch ($_GET['action']) {
         case "add":
-            if (isset($_POST["quantity"]) && is_numeric($_POST["quantity"]) && $_POST["quantity"] > 0) {
+            // Нужна ли проверка на наличие значения переменной $_POST['quantity']? *
+            if ($_POST["quantity"] > 0) {
                 $quantity = intval($_POST["quantity"]);
                 $code = $currentProduct[0];
 
@@ -44,3 +45,4 @@ if (!empty($_GET['action']))
             unset($_SESSION["cart_item"]);
             break;
     }
+}

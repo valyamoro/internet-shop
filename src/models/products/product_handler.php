@@ -11,4 +11,4 @@ $incomingProduct = array_filter($dataProducts, function ($q) {
     return $product[0] == $_GET['code'];
 });
 
-
+// Поменять функцию для поиска товаров *

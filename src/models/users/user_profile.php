@@ -5,7 +5,8 @@ $username = $_GET['name'];
 $pathUsersData = __DIR__ . '\..\..\storage_files\user.txt';
 $pathUsersWayData = __DIR__ . '\..\..\storage_files\user_way.txt';
 
-$dataUsers = file($pathUsersData, FILE_IGNORE_NEW_LINES); // поменять на users *
+$dataUsers = file($pathUsersData, FILE_IGNORE_NEW_LINES);
+// поменять на users *
 
 $approvedUsers = array_filter($dataUsers, function ($q) use ($username) {
     $user = explode('|', $q);

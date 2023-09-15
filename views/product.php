@@ -34,7 +34,7 @@ include '../src/models/products/pagination.php';
             </tr>
             <?php
             foreach ($_SESSION["cart_item"] as $item){
-                $item_price = $item["quantity"]*$item["price"];
+                $item_price = $item["quantity"] * $item["price"];
                 ?>
                 <tr>
                     <td><img src="<?php echo $item["image"]; ?>" class="cart-item-image" /><?php echo $item["name"]; ?></td>

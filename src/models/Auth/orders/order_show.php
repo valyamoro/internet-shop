@@ -1,5 +1,5 @@
 <?php
-// СОДЕРЖИМОЕ ТОВАРА
+// СОДЕРЖИМОЕ ЗАКАЗА
 session_start();
 
 $orderPath = __DIR__ . '/../../../../storage_files/order.txt';
