@@ -27,9 +27,7 @@ if (!empty($_GET['action'])) {
             }
             break;
         case "remove":
-            if (empty($_SESSION["cart_item"])) {
-                echo 'Карточка с товаром по какой-то причине пуста!';
-            } else {
+            if (!empty($_SESSION["cart_item"])) {
                 foreach($_SESSION["cart_item"] as $key => $value) {
                     $quantity = intval($_GET["quantity"]);
                     $code = $_GET['code'];

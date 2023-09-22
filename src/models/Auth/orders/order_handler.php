@@ -1,5 +1,8 @@
 <?php
+
+include __DIR__ . '/../../../../debug/debug_functions/functions.php';
 session_start();
+
 $orderProductPath = __DIR__ .'/../../../../storage_files/order_product.txt';
 $orderPath = __DIR__ .'/../../../../storage_files/order.txt';
 

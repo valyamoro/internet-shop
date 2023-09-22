@@ -8,6 +8,7 @@ include '../src/models/products/product_handler.php';
 include '../src/models/products/basket_handler.php';
 include '../src/models/products/pagination.php';
 
+
 ?>
 
 <div id="shopping-cart">

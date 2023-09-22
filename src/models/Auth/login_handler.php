@@ -21,6 +21,7 @@ if (!empty($msg)) {
     // Получаю строку с данными найденного пользователя.
     $approvedUsers = array_filter($dataUsers, function ($q) use ($email, $password) {
         $user = explode('|', $q);
+        print_r($user);
         return $user[2] === $email && password_verify($password, $user[3]);
     });
 
