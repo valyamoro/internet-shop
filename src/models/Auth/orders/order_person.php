@@ -1,129 +1,83 @@
 <?php
+include __DIR__ . '/../../../../debug/debug_functions/functions.php';
+include __DIR__ . '/help_functions.php';
 // ВЫВОД ЗАКАЗОВ
 session_start();
+// Нужно получить общую стоимость и айди заказа.
+/*
+Для этого нужно получить айди самого заказа, через него айди продуктов, а через айди продуктов получить стоимость.
+*/
+$orders = file('../../../../storage_files/order.txt');
 
-$orderPath = __DIR__ . '/../../../../storage_files/order.txt';
+foreach ($orders as $q) {
+    $order = explode('|', $q);
+    $ordersData[] = $order;
 
-$userOrders = [];
+}
 
-// Получаем информацию о заказах пользователя.
-$fileOrder = fopen($orderPath, 'r');
-if ($fileOrder) {
-    while (($line = fgets($fileOrder)) !== false) {
-        $line = trim($line);
+$ordersProduct = file('../../../../storage_files/order_product.txt');
+// Нужно получить второй элемент массива, а через него цену продукта
 
-        $parts = explode('|', $line);
+foreach ($ordersProduct as $q) {
+    $orderProduct = explode('|', $q);
+    $ordersProductData[] = $orderProduct;
+}
 
-        $userId = $parts[0];
-        $orderId = $parts[1];
+$products = file('../../../../storage_files/product.txt');
+// Нужно получить 4 элемент массива
 
-        $userIdToDisplay = $_SESSION['user']['id'];
+foreach ($products as $q) {
+    $product = explode('|', $q);
+    $productsData[] = $product;
+}
 
+$countOrders = count($orders);
 
-        if ($userId === $_SESSION['user']['id']) {
-//            echo "Заказы для пользователя с ID $userIdToDisplay: ";
-//            echo "Финальная цена: $totalPrice";
-//            foreach () {
-//                echo "$orderId, ";
-//            }
-            $countWhile = count($parts);
-            $totalIdUser = $userId;
-            echo "<br>";
-        }
+// Получаем айди товаров и количество в заказе.
+$countOrdersProduct = \count($ordersProductData);
+$productId = [];
 
+for ($i = 0; $i < $countOrdersProduct; $i++) {
+    $orderProduct = $ordersProductData[$i];
+
+    if ($orderProduct[1] === $_SESSION['user']['id']) {
+        $productId[] = $orderProduct[2];
+        $productCount[] = $orderProduct[3];
     }
+}
 
-    fclose($fileOrder);
+$countProduct = \count($products);
+for ($i = 0; $i < $countProduct; $i++) {
+    $product = $productsData[$i];
+    if ($productId[$i] == $product[0]) {
+        $productPrice[] = $product[4];
+    }
+}
 
+if (!\count($productPrice) == \count($productCount)) {
+    echo 'Массивы не равны!';
 } else {
-    echo 'Не удалось открыть файл';
-}
-
-
-$orderProductPath = __DIR__ . '/../../../../storage_files/order_product.txt';
-
-$orderProducts = [];
-
-$fileOrderProduct = fopen($orderProductPath, 'r');
-
-if ($fileOrderProduct) {
-    while (($line = fgets($fileOrderProduct)) !== false) {
-
-        $line = trim($line);
-        $parts = explode('|', $line);
-
-//        $userId = $parts[1];
-        $orderId = $parts[0];
-        $productId[] = $parts[2];
-        $count[] = $parts[3];
-
-//       if ($_SESSION['user']['id'] === $userId) {
-//            $count = $count + $count;
-//       }
-        $countPerProduct = $count;
+    $count = \count($productPrice);
+    for ($i = 0; $i < $count; $i++) {
+        $totalPriceForOne[] = $productPrice[$i] * $productCount[$i];
     }
-
-    fclose($fileOrderProduct);
-} else {
-    echo 'не удалоцй';
 }
 
+$totalPrice = \array_sum($totalPriceForOne);
 
-$productPath = __DIR__ . '/../../../../storage_files/product.txt';
+$countProduct = \count($products);
 
-$products = [];
+for ($i = 0; $i < $countOrders; $i++) {
+    $order = $ordersData[$i];
+    if ($order[0] === $_SESSION['user']['id']) {
+        echo "Айди заказа: {$order[1]}<br>";
+        echo "Цена заказа: {$totalPrice}<br>";
+        ?>
+        <form action="order_show.php" method="POST">
+            <input type="hidden" name="order_id" value="<?php echo $order[1]; ?>">
+            <input type="submit" value="Показать содержимое">
+        </form>
 
-$fileProduct = fopen($productPath, 'r');
-if ($fileProduct) {
-    while (($line = fgets($fileProduct)) !== false) {
-        $line = trim($line);
-
-        $parts = explode('|', $line);
-        // idProduct|category|name|count|price
-
-        $idProducts = $parts[0];
-        if ($_SESSION['user']['id'] === $totalIdUser) {
-            if (in_array($idProducts, $productId)) {
-                $productInfo = [
-                    'category' => $parts[1],
-                    'nameProduct' => $parts[2],
-                    'priceProduct' => $parts[4],
-                ];
-
-
-            }
-        }
-            $priceProducts[] = $parts[4]; // Добавляем только один раз
+        <?php
     }
-
-    if (count($priceProducts) === count($countPerProduct)) {
-        $result = [];
-
-        for ($i = 0; $i < count($priceProducts); $i++) {
-            $result[] = $priceProducts[$i] * $countPerProduct[$i];
-        }
-
-    } else {
-        echo 'Массивы имеют разную длину';
-    }
-
-    $finalPrice = array_sum($result);
-
-
-    fclose($fileProduct);
 }
-
-// Блок с выводом заказов:
-
-$dataOrder = file($orderPath, FILE_IGNORE_NEW_LINES);
-
-$countOrder = count($dataOrder);
-
-while ($countOrder > 0) {
-    echo "Заказы для пользователя с ID $userIdToDisplay: <br>" ;
-    echo "Финальная цена: $finalPrice <br>";
-    echo '---------------------------------';
-    $countOrder--;
-}
-
-

@@ -1,100 +1,70 @@
 <?php
+include __DIR__ . '/../../../../debug/debug_functions/functions.php';
+include __DIR__ . '/help_functions.php';
+
 // СОДЕРЖИМОЕ ЗАКАЗА
 session_start();
 
-$orderPath = __DIR__ . '/../../../../storage_files/order.txt';
+$ordersProduct = file('../../../../storage_files/order_product.txt');
+// Нужно получить второй элемент массива, а через него цену продукта
 
-$userOrders = [];
+foreach ($ordersProduct as $q) {
+    $orderProduct = explode('|', $q);
+    $ordersProductData[] = $orderProduct;
+}
 
-// Получаем информацию о заказах пользователя.
-$fileOrder = fopen($orderPath, 'r');
-if ($fileOrder) {
-    while (($line = fgets($fileOrder)) !== false) {
-        $line = trim($line);
+$countOrdersProduct = \count($ordersProductData);
+$orderId = $_POST['order_id'];
 
-        $parts = explode('|', $line);
+foreach ($ordersProductData as $orderProduct) {
+    $orderProductId = $orderProduct[0];
 
-        $userId = $parts[0];
-        $orderId = $parts[1];
-
-        if (!isset($userOrders[$userId])) {
-            $userOrders[$userId] = [];
-        }
-        $userOrders[$userId][] = $orderId;
+    if ($orderProductId == $orderId) {
+        $productId[] = $orderProduct[2];
+        $productCount[] = $orderProduct[3];
     }
-    fclose($fileOrder);
+}
 
+$products = file('../../../../storage_files/product.txt');
+// Нужно получить 4 элемент массива
+
+foreach ($products as $q) {
+    $product = explode('|', $q);
+    $productsData[] = $product;
+}
+
+$countProduct = \count($products);
+for ($i = 0; $i < $countProduct; $i++) {
+    $product = $productsData[$i];
+    if ($productId[$i] == $product[0]) {
+        $productName[] = $product[2];
+        $productPrice[] = $product[4];
+    }
+}
+
+
+if (!\count($productPrice) == \count($productCount)) {
+    echo 'Массивы не равны!';
 } else {
-    echo 'Не удалось открыть файл';
-}
-
-//print_r($userOrders);
-
-$orderProductPath = __DIR__ . '/../../../../storage_files/order_product.txt';
-
-$orderProducts = [];
-
-$fileOrderProduct = fopen($orderProductPath, 'r');
-
-if ($fileOrderProduct) {
-    while (($line = fgets($fileOrderProduct)) !== false) {
-
-        $line = trim($line);
-        $parts = explode('|', $line);
-
-        $userId = $parts[1];
-        $orderId = $parts[0];
-        $productId[] = $parts[2];
-        $count = $parts[3];
-
-
-        if ($_SESSION['user']['id'] === $userId) {
-            $orderUser[] = $line;
-        }
-
-    }
-
-    foreach ($orderUser as $line) {
-        $orderUser = explode('|', $line);
-        $orderData[] = $orderUser;
-    }
-
-    fclose($fileOrderProduct);
-} else {
-    echo 'не удалоцй';
-}
-
-$productPath = __DIR__ . '/../../../../storage_files/product.txt';
-
-$products = [];
-
-$fileProduct = fopen($productPath, 'r');
-
-if ($fileProduct) {
-    while (($line = fgets($fileProduct)) !== false) {
-        $line = trim($line);
-
-        $parts = explode('|', $line);
-        // idProduct|category|name|count|price
-
-        $idProducts = $parts[0];
-
-        if (in_array($idProducts, $productId)) {
-
-            $category = $parts[1];
-            $nameProduct = $parts[2];
-            $countProductOrder = $parts[3];
-            $priceProduct = $parts[4];
-
-            echo "Product ID: $idProducts\n";
-            echo "Category: $category\n";
-            echo "Name: $nameProduct\n";
-            echo "Count: $countProductOrder\n";
-            echo "Price: $priceProduct\n";
-            echo '<form action="order_show.php" method="post">';
-            echo '<input type="submit" value="Посмотреть товар">';
-            echo '</form>';
-        }
-
+    $count = \count($productPrice);
+    for ($i = 0; $i < $count; $i++) {
+        $totalPriceForOne[] = $productPrice[$i] * $productCount[$i];
     }
 }
+
+$totalPrice = \array_sum($totalPriceForOne);
+
+$productCount = count($productCount);
+for ($i = 0; $i < $productCount; $i++) {
+        echo "Название товара: {$productName[$i]}<br>";
+        echo "Цена одного товара: {$productPrice[$i]}<br>";
+        echo "Цена всех товаров: {$totalPriceForOne[$i]}<br>";
+        ?>
+        <form action="../../products/product_show.php" method="POST">
+            <input type="hidden" name="order_id" value="<?php echo $order[1]; ?>">
+            <input type="submit" value="Показать товар">
+        </form>
+        <?php
+}
+
+echo "Общая цена: {$totalPrice}";

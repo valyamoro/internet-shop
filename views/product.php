@@ -4,10 +4,10 @@ session_start();
 if (!$_SESSION['user']) {
     die;
 }
-
 include '../src/models/products/product_handler.php';
 include '../src/models/products/basket_handler.php';
 include '../src/models/products/pagination.php';
+
 
 ?>
 
@@ -17,8 +17,6 @@ include '../src/models/products/pagination.php';
     <a id="btnEmpty" href="product.php?action=empty">Empty Cart</a>
     <?php
     if(!empty($_SESSION["cart_item"])){
-
-//        print_r($_SESSION);
         $total_quantity = 0;
         $total_price = 0;
         ?>
@@ -98,6 +96,7 @@ if (empty($products)) {
 }
 ?>
 
+<!--ПАГИНАЦИЯ-->
 <?php if ($totalPages > 1): // Проверяем, есть ли больше одной страницы для пагинации ?>
     <div class="pagination">
         <?php if ($currentPage > 1): ?>
