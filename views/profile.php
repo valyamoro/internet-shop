@@ -14,8 +14,8 @@ include '../src/routes/user_profile.php';
 <body>
 <ul>
     <li><a href="../index.php">Хоум</a></li>
-    <li><a href="login.php">Логинизация</a></li>
-    <li><a href="registry.php">Регистринизация</a></li>
+    <li><a href="login.php">Вход</a></li>
+    <li><a href="registry.php">Регистрация</a></li>
     <li style="float:right"><a class="active" href="../src/models/Auth/logout_handler.php">Выход</a></li>
 </ul>
 </body>
