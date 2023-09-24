@@ -17,13 +17,13 @@ $countOrdersProduct = \count($ordersProductData);
 $orderId = $_POST['order_id'];
 
 foreach ($ordersProductData as $orderProduct) {
-    $orderProductId = $orderProduct[0];
-
+    $orderProductId = $orderProduct[1];
     if ($orderProductId == $orderId) {
         $productId[] = $orderProduct[2];
         $productCount[] = $orderProduct[3];
     }
 }
+
 
 $products = file('../../../../storage_files/product.txt');
 // Нужно получить 4 элемент массива
@@ -37,6 +37,7 @@ $countProduct = \count($products);
 for ($i = 0; $i < $countProduct; $i++) {
     $product = $productsData[$i];
     if ($productId[$i] == $product[0]) {
+        $productId[] = $product[0];
         $productName[] = $product[2];
         $productPrice[] = $product[4];
     }
@@ -61,7 +62,7 @@ for ($i = 0; $i < $productCount; $i++) {
         echo "Цена всех товаров: {$totalPriceForOne[$i]}<br>";
         ?>
         <form action="../../products/product_show.php" method="POST">
-            <input type="hidden" name="order_id" value="<?php echo $order[1]; ?>">
+            <input type="hidden" name="product_id" value="<?php echo $productId[$i]; ?>">
             <input type="submit" value="Показать товар">
         </form>
         <?php

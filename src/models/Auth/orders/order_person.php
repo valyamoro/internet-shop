@@ -36,7 +36,7 @@ $countOrders = count($orders);
 // Получаем айди товаров и количество в заказе.
 $countOrdersProduct = \count($ordersProductData);
 $productId = [];
-
+// изменить имена переменных, например на $orderProductId, они ведь оттуда и берутся *
 for ($i = 0; $i < $countOrdersProduct; $i++) {
     $orderProduct = $ordersProductData[$i];
 
