@@ -17,13 +17,13 @@ $countOrdersProduct = \count($ordersProductData);
 $orderId = $_POST['order_id'];
 
 foreach ($ordersProductData as $orderProduct) {
-    $orderProductId = $orderProduct[0];
-
+    $orderProductId = $orderProduct[1];
     if ($orderProductId == $orderId) {
         $productId[] = $orderProduct[2];
         $productCount[] = $orderProduct[3];
     }
 }
+
 
 $products = file('../../../../storage_files/product.txt');
 // Нужно получить 4 элемент массива
