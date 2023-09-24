@@ -15,9 +15,10 @@ include '../src/models/blogs/blog_list.php';
                 <b>Категория:</b> <i><?= $article['category']; ?></i>
             </td>
             <td width="30%">
-                <a href="?c=articles&a=view&id=<?=$article['id']; ?>">
-                    Далее...
-                </a>
+                <form action="blog_show.php" method="post">
+                    <input type="hidden" name="article_id" value="<?php echo $article['id']; ?>">
+                    <input type="submit" value="Подробнее">
+                </form>
             </td>
         </tr>
     </table>
